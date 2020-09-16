@@ -1,0 +1,58 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.login_bg {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* z-index:-9999; */
+    /* background:url(../img/login_bg.jpg) no-repeat 50%; */
+    background: url(../img/login_bg.jpg) no-repeat 50%;
+    background-size: cover;
+}
+
+.login_css {
+    font: normal 14px/1 Lantinghei SC, Open Sans, Hiragino Sans GB, WenQuanYi Micro Hei, Microsoft YaHei, STHeiti, SimSun, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
+    position: absolute;
+    right: 15vw;
+    top: 50%;
+    width: 380px;
+    transform: translateY(-50%);
+    border-radius: 2px;
+    background: #fff;
+    overflow: hidden;
+    z-index: 200;
+}
+
+body .aux-self {
+    padding: 20px;
+}
+
+body .aux-self .layui-input-block {
+    float: left;
+    margin-left: 0;
+}
+
+body .aux-self .layui-form-label {
+    width: 90px;
+}
+
+.aux-self-word {
+    padding: 8px 10px;
+    float: left;
+    margin-left: 20px;
+    border: 1px solid #e6e6e6;
+    width: 220px;
+    color: #ff1010;
+    display: none;
+}
+

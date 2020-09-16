@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    故障类型
+{% endblock %}
+
+
+
+{% block info %}
+    <h1>故障类型</h1>
+
+    {#  详情页代码块  #}
+    <div class="modify-pwd-layer aux-self" id="EditHser" style="display:none;">
+        <div class="layui-col-md10">
+            <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障类型</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="faulttype" id="faulttype" placeholder="请输入故障类型" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="margin-top:40px" id="check">
+                    <div class="layui-input-block">
+                        <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {#  搜索代码块  #}
+    <div class="demoTable" style="padding: 15px">
+        <button type="button" class="layui-btn layui-btn-normal" lay-event="add" id="addType">添加
+        </button>
+    </div>
+
+    {# 表格 #}
+    <table id="fault" lay-filter="test" class="layui-hide"></table>
+
+    {#  删改查  #}
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    {#  增加主机  #}
+
+
+
+    <script>
+        layui.use(['table', 'form'], function () {
+            var table = layui.table;
+            var form = layui.form;
+
+            //获取详情
+            table.render({
+                elem: '#fault'
+                , id: 'typeInfo'
+                , height: 530
+                , limit: 10
+                , limits: [3, 5, 10]
+                , method: 'post'
+                , contentType: 'application/json'
+                , toolbar: true
+                , url: '/faultManage/type' //数据接口
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                        field: 'id',
+                        title: 'ID',
+                        width: 60,
+                        fixed: 'left',
+                        unresize: true,
+                        sort: true,
+                        totalRowText: '合计'
+                    }
+                    , {field: 'faulttype', title: '故障类型', width: 120}
+                    , {field: 'create_time', title: '创建时间', width: 180}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200}
+                ]]
+                , response: {
+                    statusName: 'errno', //规定返回的状态码字段为code
+                    statusCode: 0, //规定成功的状态码味200
+                    countName: 'count', // 对应 count
+                    dataName: 'data', // 对应 data
+                    msgName: 'errmsg' //规定状态信息的字段名称，默认：msg
+                }
+            });
+
+            $('#addType').on('click', function () {
+                $("#check").show();
+                $("#faulttype").val();
+                layer.open({
+                    type: 1,
+                    title: "添加故障类型",
+                    area: ['520px', '590px'],
+                    content: $("#EditHser"),
+                    success: function (layero) {
+                        var mask = $(".layui-layer-shade");
+                        mask.appendTo(layero.parent());
+                    }
+                });
+
+            });
+
+
+            //删改查
+            table.on('tool(test)', function (obj) {
+                var data = obj.data;
+                var hostId = data.id;
+                if (obj.event === 'del') {
+                    layer.open({
+                        title: '警告'
+                        , content: '是否要删除第【' + hostId + "】条主机记录"
+                        , icon: 2
+                        , yes: function () {
+                            //按钮【按钮一】的回调
+                            $.ajax({
+                                url: '/faultManage/type/' + hostId,
+                                type: 'DELETE',
+                                success: function (result) {
+                                    layer.msg('删除成功！', {icon: 1});
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            form.on('submit(formChange)', function (data) {
+
+                $.ajax({
+                    url: "/faultManage/type/add",
+                    type: "post",
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    {#data:JSON.parse(data.field),#}
+                    success: function (msg) {
+                        if (msg != null) {
+                            layer.closeAll('loading');
+                            layer.load(2);
+                            layer.msg("修改成功", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                                location.reload();
+                            }, 500);
+                            {#加载层 - 风格#}
+                        } else {
+                            layer.msg("修改失败", {icon: 5});
+                        }
+                    }
+                });
+                return false;
+            })
+
+        });
+
+
+    </script>
+{% endblock %}

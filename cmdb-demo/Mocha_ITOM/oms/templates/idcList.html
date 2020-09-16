@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    网络资产设备
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>网络资产设备</h1>
+    {#  详情页代码块  #}
+    <div class="modify-pwd-layer aux-self" id="EditHser" style="display:none;">
+        <div class="layui-col-md10">
+            <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+                <input type="hidden" name="id" id="id">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">机房名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idc_name" id="idc_name" required lay-verify="required"
+                               autocomplete="off"
+                               placeholder="请输入机房名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">机房类型</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idc_type" id="idc_type" placeholder="请输入机房类型" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">机房位置</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idc_location" id="idc_location" placeholder="请输入机房位置"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">合同时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="contract_date" id="contract_date" placeholder="请输入合同时间"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idc_contacts" id="idc_contacts" placeholder="请输入联系电话"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="status" id="status" placeholder="请输入状态" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="remark" id="remark" placeholder="请输入备注" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="margin-top:40px" id="check">
+                    <div class="layui-input-block">
+                        <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {#  搜索代码块  #}
+    <div class="demoTable" style="padding: 15px">
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-normal" lay-event="add" id="addHost">添加</button>
+        </div>
+    </div>
+
+    {# 表格 #}
+    <table id="idc" lay-filter="test" class="layui-hide"></table>
+
+    {#  删改查  #}
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+    <script>
+        layui.use(['table', 'form'], function () {
+            var table = layui.table;
+            var form = layui.form;
+
+            //获取详情
+            table.render({
+                elem: '#idc'
+                , id: 'idcInfo'
+                , height: 530
+                , limit: 10
+                , limits: [3, 5, 10]
+                , method: 'post'
+                , contentType: 'application/json'
+                , toolbar: true
+                , url: '/assetManage/idc' //数据接口
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                        field: 'id',
+                        title: 'ID',
+                        width: 60,
+                        fixed: 'left',
+                        unresize: true,
+                        sort: true,
+                        totalRowText: '合计'
+                    }
+                    , {field: 'idc_name', title: '机房名称', width: 120}
+                    , {field: 'idc_type', title: '机房类型', width: 120}
+                    , {field: 'idc_location', title: '机房位置', width: 100}
+                    , {field: 'contract_date', title: '合同时间', width: 120}
+                    , {field: 'idc_contacts', title: '联系电话', width: 120}
+                    , {field: 'status', title: '状态', width: 140}
+                    , {field: 'remark', title: '备注', width: 160}
+                    , {field: 'create_time', title: '创建时间', width: 180}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200}
+                ]]
+                , response: {
+                    statusName: 'errno', //规定返回的状态码字段为code
+                    statusCode: 0, //规定成功的状态码味200
+                    countName: 'count', // 对应 count
+                    dataName: 'data', // 对应 data
+                    msgName: 'errmsg' //规定状态信息的字段名称，默认：msg
+                }
+            });
+
+
+            // 添加主机
+            $('#addHost').on('click', function () {
+                $("#check").show();
+                $("#idc_name").val();
+                $("#idc_type").val();
+                $("#idc_location").val();
+                $("#contract_date").val();
+                $("#idc_contacts").val();
+                $("#status").val();
+                $("#remark").val();
+                layer.open({
+                    type: 1,
+                    title: "添加主机",
+                    area: ['520px', '590px'],
+                    content: $("#EditHser"),
+                    success: function (layero) {
+                        var mask = $(".layui-layer-shade");
+                        mask.appendTo(layero.parent());
+                    }
+                });
+
+            });
+
+
+            //删改查
+            table.on('tool(test)', function (obj) {
+                var data = obj.data;
+                var hostId = data.id;
+                //查看
+                if (obj.event === 'detail') {
+                    $("#check").hide();
+                    $("#idc_name").val(data.idc_name);
+                    $("#idc_type").val(data.idc_type);
+                    $("#idc_location").val(data.idc_location);
+                    $("#contract_date").val(data.contract_date);
+                    $("#idc_contacts").val(data.idc_contacts);
+                    $("#status").val(data.status);
+                    $("#remark").val(data.remark);
+                    $("#id").val(data.id);
+                    layer.open({
+                        type: 1,
+                        title: "主机信息",
+                        area: ['520px', '590px'],
+                        content: $("#EditHser"),
+                        success: function (layero) {
+                            var mask = $(".layui-layer-shade");
+                            mask.appendTo(layero.parent());
+                        }
+                    });
+
+                    // layer.msg('ID：'+ data.id + ' 的查看操作');
+                } else if (obj.event === 'del') {
+                    layer.open({
+                        title: '警告'
+                        , content: '是否要删除第【' + hostId + "】条主机记录"
+                        , icon: 2
+                        , yes: function () {
+                            //按钮【按钮一】的回调
+                            $.ajax({
+                                url: '/assetManage/idc/' + hostId,
+                                type: 'DELETE',
+                                success: function (result) {
+                                    layer.msg('删除成功！', {icon: 1});
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                }
+                            });
+                        }
+                    });
+                } else if (obj.event === 'edit') {
+                    $("#check").show();
+                    $("#idc_name").val(data.idc_name);
+                    $("#idc_type").val(data.idc_type);
+                    $("#idc_location").val(data.idc_location);
+                    $("#contract_date").val(data.contract_date);
+                    $("#idc_contacts").val(data.idc_contacts);
+                    $("#status").val(data.status);
+                    $("#remark").val(data.remark);
+                    $("#id").val(data.id);
+                    layer.open({
+                        type: 1,
+                        title: "修改主机信息",
+                        area: ['520px', '590px'],
+                        content: $("#EditHser"),
+                        success: function (layero) {
+                            var mask = $(".layui-layer-shade");
+                            mask.appendTo(layero.parent());
+                        }
+                    });
+                }
+            });
+
+            form.on('submit(formChange)', function (data) {
+                var hostId = data.field.id;
+                var url, method;
+                if (hostId == "") {
+                    url = "/assetManage/idc/add";
+                    method = "post"
+                } else {
+                    url = '/assetManage/idc/' + data.field.id;
+                    method = "put"
+                }
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    {#data:JSON.parse(data.field),#}
+                    success: function (msg) {
+                        if (msg != null) {
+                            layer.closeAll('loading');
+                            layer.load(2);
+                            layer.msg("修改成功", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                                location.reload();
+                            }, 500);
+                            {#加载层 - 风格#}
+                        } else {
+                            layer.msg("修改失败", {icon: 5});
+                        }
+                    }
+                });
+                return false;
+            })
+
+        });
+
+
+    </script>
+{% endblock %}

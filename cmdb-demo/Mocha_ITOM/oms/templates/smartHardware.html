@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    首页-运维自动化管理
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>智能硬件模块编译</h1>
+
+    <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">目标主机</label>
+            <div class="layui-input-block">
+                <input type="text" name="host" id="host" placeholder="请输入目标主机" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">版本列表</label>
+            <button class="layui-btn layui-form-label" style="float: right">编译日志</button>
+            <div class="layui-input-block" style="width: 300px;">
+                <select lay-verify="required" name="version" id="version" placeholder="请选择版本">
+                    <option value="0">master</option>
+                    <option value="1">dev</option>
+                    <option value="2">stg</option>
+                    <option value="3">oms</option>
+                </select>
+            </div>
+
+
+        </div>
+
+
+        <div class="layui-form-item" style="margin-top:40px" id="check">
+            <div class="layui-input-block">
+                <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="">编译</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返回结果</label>
+            <div class="layui-input-block">
+                <textarea type="text" name="res" id="res" class="layui-input" style="height: 400px"
+                          placeholder="编译请看编译日志，最后编译返回结果请看这里（编译过程会比较慢，页面会呈现出新的状态，不用慌张，请耐心等待....）"></textarea>
+            </div>
+            <div class="layui-input-block">
+                <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">发布链接</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+
+    </form>
+
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            form.render();
+        });
+    </script>
+
+{% endblock %}

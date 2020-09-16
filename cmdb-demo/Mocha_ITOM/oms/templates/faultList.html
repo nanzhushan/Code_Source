@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    故障列表
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>故障列表</h1>
+
+
+    {#  详情页代码块  #}
+    <div class="modify-pwd-layer aux-self" id="EditHser" style="display:none;">
+        <div class="layui-col-md10">
+            <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+                <input type="hidden" name="id" id="id">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障概述</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" id="title" required lay-verify="required" autocomplete="off"
+                               placeholder="请输入故障概述" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障级别</label>
+                    <div class="layui-input-block">
+                        <select lay-verify="required" name="level" id="level" placeholder="请选择故障级别">
+                            <option value=""></option>
+                            <option value="0">非常严重</option>
+                            <option value="1">严重</option>
+                            <option value="2">中等</option>
+                            <option value="3">一般</option>
+                            <option value="4">无影响</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障类型</label>
+                    <div class="layui-input-block">
+                        <select lay-verify="required" name="typeinfo" id="typeinfo" placeholder="请选择故障类型">
+                            <option value=""></option>
+                            <option value="1">自行定义</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">影响项目</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="project" id="project" placeholder="请输入影响项目"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障状态</label>
+                    <div class="layui-input-block">
+                        <select lay-verify="required" name="status" id="status" placeholder="请选择故障状态">
+                            <option value=""></option>
+                            <option value="0">处理中</option>
+                            <option value="1">已恢复</option>
+                            <option value="2">改进中</option>
+                            <option value="3">已完结</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="faulttime" id="faulttime" placeholder="请输入故障时间: yyyy-mm-dd" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">主导跟进</label>
+                    <div class="layui-input-block">
+                        <select lay-verify="required" name="improve" id="improve" placeholder="请输入主导跟进">
+                            <option value=""></option>
+                            <option value="0">开发</option>
+                            <option value="1">运维</option>
+                            <option value="2">机房</option>
+                            <option value="3">网络运营商</option>
+                            <option value="3">第三方</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">故障影响</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="effect" id="effect" placeholder="描述对哪些业务造成了影响" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">原因分析</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="content" id="content" placeholder="描述故障发生前前后后进行分析" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">解决方案</label>
+                    <div class="layui-input-block">
+                        <textarea type="text" name="solution" id="solution"
+                                  placeholder="请按如下文格式编写：&#13;&#10;1.整理资料，学习笔记&#13;&#10;2.发布日志,杂文,所见所想&#13;&#10;3.撰写发布技术文稿(代码支持)"
+                                  class="layui-input" style="height: 100px"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="margin-top:40px" id="check">
+                    <div class="layui-input-block">
+                        <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">确认</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {#  搜索代码块  #}
+    <div class="demoTable" style="padding: 15px">
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-normal" lay-event="add" id="addHost">添加</button>
+        </div>
+    </div>
+
+    {# 表格 #}
+    <table id="fault" lay-filter="test" class="layui-hide"></table>
+
+    {#  删改查  #}
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+
+
+    <script>
+        layui.use(['table', 'form', 'laydate'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#faulttime' //指定元素
+                ,trigger: 'click'
+            });
+
+            //获取详情
+            table.render({
+                elem: '#fault'
+                , id: 'faultInfo'
+                , height: 530
+                , limit: 10
+                , limits: [3, 5, 10]
+                , method: 'post'
+                , contentType: 'application/json'
+                , toolbar: true
+                , url: '/faultManage/fault' //数据接口
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                        field: 'id',
+                        title: 'ID',
+                        width: 60,
+                        fixed: 'left',
+                        unresize: true,
+                        sort: true,
+                        totalRowText: '合计'
+                    }
+                    , {field: 'title', title: '故障简述', width: 120}
+                    , {field: 'level', title: '故障级别', width: 120}
+                    , {field: 'typeinfo', title: '故障类型', width: 100}
+                    , {field: 'project', title: '影响项目', width: 120}
+                    , {field: 'reasons', title: '故障原因', width: 120}
+                    , {field: 'solution', title: '解决方案', width: 120}
+                    , {field: 'status', title: '状态', width: 140}
+                    , {field: 'remark', title: '备注', width: 160}
+                    , {field: 'create_time', title: '创建时间', width: 180}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200}
+                ]]
+                , response: {
+                    statusName: 'errno', //规定返回的状态码字段为code
+                    statusCode: 0, //规定成功的状态码味200
+                    countName: 'count', // 对应 count
+                    dataName: 'data', // 对应 data
+                    msgName: 'errmsg' //规定状态信息的字段名称，默认：msg
+                }
+            });
+
+            // 查找主机
+            $('#queryHost').on('click', function () {
+                var find = document.getElementById("find").value;
+                table.reload('faultInfo', {
+                    where: {'ip': find}
+                })
+            });
+
+            // 添加主机
+            $('#addHost').on('click', function () {
+                $("#check").show();
+                $("#title").val();
+                $("#level").val();
+                $("#typeinfo").val();
+                $("#project").val();
+                $("#status").val();
+                $("#faulttime").val();
+                $("#improve").val();
+                $("#effect").val();
+                $("#content").val();
+                $("#solution").val();
+                layer.open({
+                    type: 1,
+                    title: "添加主机",
+                    area: ['520px', '590px'],
+                    content: $("#EditHser"),
+                    success: function (layero) {
+                        var mask = $(".layui-layer-shade");
+                        mask.appendTo(layero.parent());
+                    }
+                });
+
+            });
+
+
+            //删改查
+            table.on('tool(test)', function (obj) {
+                var data = obj.data;
+                var hostId = data.id;
+                //查看
+                if (obj.event === 'detail') {
+                    $("#check").hide();
+                    $("#title").val(data.title);
+                    $("#level").val(data.level);
+                    $("#typeinfo").val(data.typeinfo);
+                    $("#project").val(data.project);
+                    $("#status").val(data.status);
+                    $("#faulttime").val(data.faulttime);
+                    $("#improve").val(data.improve);
+                    $("#effect").val(data.effect);
+                    $("#content").val(data.content);
+                    $("#solution").val(data.solution);
+                    $("#id").val(data.id);
+                    layer.open({
+                        type: 1,
+                        title: "主机信息",
+                        area: ['520px', '590px'],
+                        content: $("#EditHser"),
+                        success: function (layero) {
+                            var mask = $(".layui-layer-shade");
+                            mask.appendTo(layero.parent());
+                        }
+                    });
+
+                    // layer.msg('ID：'+ data.id + ' 的查看操作');
+                } else if (obj.event === 'del') {
+                    layer.open({
+                        title: '警告'
+                        , content: '是否要删除第【' + hostId + "】条主机记录"
+                        , icon: 2
+                        , yes: function () {
+                            //按钮【按钮一】的回调
+                            $.ajax({
+                                url: '/faultManege/fault/' + hostId,
+                                type: 'DELETE',
+                                success: function (result) {
+                                    layer.msg('删除成功！', {icon: 1});
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                }
+                            });
+                        }
+                    });
+                } else if (obj.event === 'edit') {
+                    $("#check").show();
+                    $("#title").val(data.title);
+                    $("#level").val(data.level);
+                    $("#typeinfo").val(data.typeinfo);
+                    $("#project").val(data.project);
+                    $("#status").val(data.status);
+                    $("#faulttime").val(data.faulttime);
+                    $("#improve").val(data.improve);
+                    $("#effect").val(data.effect);
+                    $("#content").val(data.content);
+                    $("#solution").val(data.solution);
+                    $("#id").val(data.id);
+                    layer.open({
+                        type: 1,
+                        title: "修改主机信息",
+                        area: ['520px', '590px'],
+                        content: $("#EditHser"),
+                        success: function (layero) {
+                            var mask = $(".layui-layer-shade");
+                            mask.appendTo(layero.parent());
+                        }
+                    });
+                }
+            });
+
+            form.on('submit(formChange)', function (data) {
+                var hostId = data.field.id;
+                var url, method;
+                if (hostId == "") {
+                    url = "/faultManage/fault/add";
+                    method = "post"
+                } else {
+                    url = '/faultManage/fault/' + data.field.id;
+                    method = "put"
+                }
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    {#data:JSON.parse(data.field),#}
+                    success: function (msg) {
+                        if (msg != null) {
+                            layer.closeAll('loading');
+                            layer.load(2);
+                            layer.msg("修改成功", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                                location.reload();
+                            }, 500);
+                            {#加载层 - 风格#}
+                        } else {
+                            layer.msg("修改失败", {icon: 5});
+                        }
+                    }
+                });
+                return false;
+            })
+
+        });
+
+
+
+    </script>
+{% endblock %}

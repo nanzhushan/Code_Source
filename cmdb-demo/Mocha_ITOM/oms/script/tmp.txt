@@ -1,0 +1,72 @@
+Last failed login: Mon May 11 17:17:16 CST 2020 from 35.223.200.55 on ssh:notty
+There were 31 failed login attempts since the last successful login.
+Last login: Mon May 11 16:51:21 2020 from 113.87.194.26
+tree -FCN softs/tr-master
+[root@instance-loh4ce28 ~]# tree -FCN softs/tr-master
+[01;34msofts/tr-master[00m
+├── [01;34mbuild[00m/
+│   ├── [01;34mbdist.linux-x86_64[00m/
+│   └── [01;34mlib[00m/
+│       ├── [01;34mlibtorch[00m/
+│       │   └── [01;34mlib[00m/
+│       │       ├── libc10.so
+│       │       ├── libcaffe2_detectron_ops.so
+│       │       ├── libcaffe2_module_test_dynamic.so
+│       │       ├── libgomp-7c85b1e2.so.1
+│       │       └── libtorch.so
+│       └── [01;34mtr[00m/
+│           ├── char_table.txt
+│           ├── crnn.bin
+│           ├── ctpn.bin
+│           ├── __init__.py
+│           ├── libtr.so
+│           └── tr.py
+├── [01;34mdist[00m/
+│   └── tr-1.5.0-py3.6.egg
+├── example.py
+├── [01;34mimgs[00m/
+│   ├── [01;35mid_card.jpeg[00m
+│   ├── [01;35mline.png[00m
+│   ├── [01;35mname_card.jpg[00m
+│   ├── [01;34moutput[00m/
+│   │   ├── [01;34mid_card[00m/
+│   │   │   ├── [01;35m1.png[00m
+│   │   │   └── [01;35m2.png[00m
+│   │   └── [01;34mname_card[00m/
+│   │       ├── [01;35m1.png[00m
+│   │       └── [01;35m2.png[00m
+│   └── [01;35mweb.png[00m
+├── [01;34mlibtorch[00m/
+│   └── [01;34mlib[00m/
+│       ├── [01;32mlibc10.so[00m*
+│       ├── [01;32mlibcaffe2_detectron_ops.so[00m*
+│       ├── [01;32mlibcaffe2_module_test_dynamic.so[00m*
+│       ├── [01;32mlibgomp-7c85b1e2.so.1[00m*
+│       └── libtorch.so
+├── MANIFEST.in
+├── msyh.ttf
+├── [01;34m__pycache__[00m/
+│   └── tools.cpython-36.pyc
+├── README.md
+├── setup.py
+├── [01;32mtest_angle.py[00m*
+├── [01;32mtest.py[00m*
+├── tools.py
+├── [01;34mtr[00m/
+│   ├── char_table.txt
+│   ├── [01;32mcrnn.bin[00m*
+│   ├── ctpn.bin
+│   ├── __init__.py
+│   ├── [01;32mlibtr.so[00m*
+│   ├── [01;34m__pycache__[00m/
+│   │   ├── __init__.cpython-36.pyc
+│   │   └── tr.cpython-36.pyc
+│   └── [01;32mtr.py[00m*
+└── [01;34mtr.egg-info[00m/
+    ├── dependency_links.txt
+    ├── PKG-INFO
+    ├── SOURCES.txt
+    └── top_level.txt
+
+17 directories, 46 files
+[root@instance-loh4ce28 ~]# 

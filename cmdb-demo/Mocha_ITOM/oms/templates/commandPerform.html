@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    命令执行
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>命令执行</h1>
+
+
+
+    <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">目标主机</label>
+            <div class="layui-input-block">
+                <input type="text" name="host" id="host" placeholder="请输入目标主机" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">远程命令</label>
+            <div class="layui-input-block">
+                <input type="text" name="code" id="code" placeholder="请输入远程终端命令" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top:40px" id="check">
+            <div class="layui-input-block">
+                <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">确认</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返回结果</label>
+            <div class="layui-input-block">
+                <textarea type="text" name="res" id="res" class="layui-input" style="height: 400px"></textarea>
+            </div>
+        </div>
+
+
+    </form>
+
+    <script>
+        layui.use(['table', 'form', 'laydate'], function () {
+            var form = layui.form;
+
+            form.on('submit(formChange)', function (data) {
+                $.ajax({
+                    url: '/deployManage/command',
+                    type: "post",
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    success: function (msg) {
+                        if (msg != null) {
+                            layer.closeAll('loading');
+                            layer.load(2);
+                            layer.msg("操作成功", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                            }, 500);
+                            $("#res").val(msg.result);
+                            {#加载层 - 风格#}
+                        } else {
+                            layer.msg("操作失败！", {icon: 5});
+                        }
+                    }
+                });
+                return false;
+            })
+        })
+
+
+    </script>
+
+
+
+{% endblock %}

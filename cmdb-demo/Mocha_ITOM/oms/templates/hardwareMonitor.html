@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    智能硬件接口信息状态列表
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>智能硬件接口信息状态列表</h1>
+
+    <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择模块</label>
+            <button class="layui-btn layui-form-label" style="float: right">send</button>
+            <div class="layui-input-block" style="width: 300px;">
+                <select lay-verify="required" name="version" id="version" placeholder="请选择模块">
+                    <option value="0">master</option>
+                    <option value="1">dev</option>
+                    <option value="2">stg</option>
+                    <option value="3">oms</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返回结果</label>
+            <div class="layui-input-block">
+                <textarea type="text" name="res" id="res" class="layui-input" style="height: 200px"
+                          placeholder="编译请看编译日志，最后编译返回结果请看这里（编译过程会比较慢，页面会呈现出新的状态，不用慌张，请耐心等待....）"></textarea>
+            </div>
+        </div>
+
+
+    </form>
+
+    <table id="hardware" lay-filter="test" class="layui-hide"></table>
+
+
+    <script>
+        layui.use(['form','table'], function () {
+            var form = layui.form;
+            var table = layui.table;
+            form.render();
+
+
+            //获取详情
+            table.render({
+                elem: '#hardware'
+                , id: 'hardwareInfo'
+                , height: 530
+                , limit: 10
+                , limits: [3, 5, 10]
+                , method: 'post'
+                , contentType: 'application/json'
+                , toolbar: true
+                , url: '/monitorManage/hardware' //数据接口
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {
+                        field: 'id',
+                        title: 'ID',
+                        width: 60,
+                        fixed: 'left',
+                        unresize: true,
+                        sort: true,
+                        totalRowText: '合计'
+                    }
+                    , {field: 'module', title: '模块', width: 120}
+                    , {field: 'url', title: '接口地址', width: 120}
+                    , {field: 'headers', title: '头部', width: 100}
+                    , {field: 'body', title: '请求主体', width: 120}
+                    , {field: 'method', title: '请求方式', width: 120}
+                    , {field: 'update_interval', title: '请求频率', width: 140}
+                    , {field: 'status', title: 'http状态', width: 160}
+                    , {field: 'create_time', title: '创建时间', width: 180}
+                    , {field: 'remark', title: '备注'}
+                ]]
+                , response: {
+                    statusName: 'errno', //规定返回的状态码字段为code
+                    statusCode: 0, //规定成功的状态码味200
+                    countName: 'count', // 对应 count
+                    dataName: 'data', // 对应 data
+                    msgName: 'errmsg' //规定状态信息的字段名称，默认：msg
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

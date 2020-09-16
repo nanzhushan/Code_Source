@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block titleBlock %}
+    代码发布
+{% endblock %}
+
+
+
+{% block info %}
+
+    <h1>代码发布</h1>
+
+
+    <form class="layui-form layui-from-pane" id="updateUser" style="margin-top:20px;  z-index: 100000000">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">项目</label>
+            <div class="layui-input-block">
+                <input type="text" name="project" id="project" placeholder="请输入项目名称" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">代码URL</label>
+            <div class="layui-input-block">
+                <input type="text" name="codeUrl" id="codeUrl" placeholder="请输入代码Url" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">版本号</label>
+            <div class="layui-input-block">
+                <input type="text" name="version" id="version" placeholder="请输入版本号" class="layui-input" required
+                       lay-verify="required" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">部署环境</label>
+            <div class="layui-input-block">
+                <input id="env" type="radio" name="sex" value="测试" title="测试">
+                <input id="env" type="radio" name="sex" value="正式" title="正式" checked>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返回结果</label>
+            <div class="layui-input-block">
+                <textarea type="text" name="res" id="res" class="layui-input" style="height: 400px"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top:40px" id="check">
+            <div class="layui-input-block">
+                <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="formChange">推送</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+
+    </form>
+
+    <script>
+        layui.use(['table', 'form', 'laydate'], function () {
+            var form = layui.form;
+
+            form.on('submit(formChange)', function (data) {
+                $.ajax({
+                    url: '/deployManage/code',
+                    type: "post",
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    success: function (msg) {
+                        if (msg != null) {
+                            layer.closeAll('loading');
+                            layer.load(2);
+                            layer.msg("操作成功", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                            }, 500);
+                            $("#res").val(msg.result);
+                            {#加载层 - 风格#}
+                        } else {
+                            layer.msg("操作失败！", {icon: 5});
+                        }
+                    }
+                });
+                return false;
+            })
+        })
+
+
+    </script>
+
+
+
+{% endblock %}
